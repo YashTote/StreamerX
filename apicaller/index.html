@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <video id="video1" autoplay controls muted width="800"></video>
+    <div> 
+    <button id="start_call"> Start the call </button>
+    <br>
+    </div>
+      <form id="ffmpeg_form" action="http://localhost:3000/ffmpeg_start" method="post">
+        <label for="StreamId">Stream Id</label><br>
+        <input type="text" id="StreamId" name="StreamId" value="live2"><br>
+        <label for="StreamKey">Stream Key</label><br>
+        <input type="text" id="StreamKey" name="StreamKey" value="xmb4-a452-bw51-mqsh-0d55"><br><br>
+        <input type="submit" value="Submit">
+      </form> 
+    <script>
+      async function call(){  
+      let url = 'http://127.0.0.1:1985/rtc/v1/whip/?app=live&stream=livestream'
+      let whipwhap = await import('https://cdn.jsdelivr.net/npm/whip-whap-js')
+    //   document.write('<video id="video1" autoplay controls muted width="1024" allowfullscreen/>')
+      let pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
+      pc.addEventListener('iceconnectionstatechange', whipwhap.handleIceStateChange)
+      pc.addEventListener('negotiationneeded', ev => whipwhap.handleNegotiationNeeded(ev, url))
+      let gum = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      pc.addTransceiver(gum.getVideoTracks()[0], { 'direction': 'sendonly' })
+      pc.addTransceiver(gum.getAudioTracks()[0], { 'direction': 'sendonly' })
+      let video1 = document.getElementById('video1')
+      video1.srcObject = gum
+      video1.play()}
+      document.getElementById('start_call').addEventListener('click',call)
+    </script>
+    <script src="./script.js"></script>
+  </body>
+</html>
