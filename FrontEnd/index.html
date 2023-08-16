@@ -62,11 +62,12 @@
         if (stream) return;
         stream = await navigator.mediaDevices.getUserMedia({
           video: true,
-          audio: true,
+          audio: false,
         });
         user1.srcObject = stream;
         if (stream) {
           console.log("The stream has been captured.");
+          console.log(stream);
         }
       };
       createStream();
